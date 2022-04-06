@@ -8,29 +8,107 @@
 
 let word = document.getElementById("user");
 let plus = document.getElementById("plus");
-let addbt = document.getElementById("addbt")
+let addbt = document.getElementById("addbt");
+let tabs = document.querySelectorAll(".task-tab div");
+let all = document.getAnimations("all");
+let ing = document.getAnimations("ing");
+let fin = document.getAnimations("fin");
+let mode = "all";
+let filterlist = [];
+
 let list = [];
+let donelist = [];
 
 plus.addEventListener("click", plusb);
 
+for (let i = 1; i < tabs.length; i++) {
+  tabs[i].addEventListener("click", filter);
+}
+
+function filter(event) {
+  mode = event.target.id;
+
+  if (mode == "all") {
+    addbottom();
+  } else if (mode == "ing") {
+    for (let ii = 0; ii < list.length; ii++) {
+      if (list[ii].isComplete == false) filterlist.push(list[ii]);
+    }
+    addbottom();
+  } else if (mode == "fin") {
+    for (let ii = 0; ii < list.length; ii++) {
+      if (list[ii].isComplete == true) filterlist.push(list[ii]);
+    }
+    addbottom();
+  }
+}
+
 function plusb() {
-  let userword = word.value;
-  list.push(userword);
+  let task = {
+    id: randomID(),
+    taskContent: word.value,
+    isComplete: false,
+  };
+  list.push(task);
+  console.log(list);
+  addbottom();
+}
+
+function checkb(id) {
+  for (let ii = 0; ii < list.length; ii++) {
+    if (list[ii].id == id) {
+      list[ii].isComplete = !list[ii].isComplete;
+      break;
+    }
+  }
+  addbottom();
+}
+
+function deleteb(id) {
+  for (let ii = 0; ii < list.length; ii++) {
+    if (list[ii].id == id) {
+      list.splice(ii, 1);
+      break;
+    }
+  }
   addbottom();
 }
 
 function addbottom() {
-  let result = '';
-  for (let i = 0; i < list.length; i++)
-  {
-      result += `<div class = "task">
-      <div id = "add">${list[i]}</div>
-      <div>
-          <button>Check</button>
-          <button>Delete</button>
-      </div>
-  </div>`
-                
+  let listt = [];
+
+  if (mode == "all") {
+    listt = list;
   }
-    addbt.innerHTML = result;
+  else if (mode == "ing" || mode == "fin"){
+    listt = filterlist;
+  }
+
+  let result = "";
+  for (let i = 0; i < listt.length; i++) {
+    if (listt[i].isComplete == true) {
+      result += `<div class = "task" id = "${listt[i].id}">
+      <div class ="done">${listt[i].taskContent}</div>
+      <div>
+          <button onclick = "checkb('${listt[i].id}')"><i class="fa-solid fa-arrow-rotate-left"></i></button>
+          <button onclick = "deleteb('${listt[i].id}')"><i class="fa-solid fa-trash"></button>
+          
+      </div>
+  </div>`;
+    } else {
+      if (listt[i].isComplete == false)
+        result += `<div class = "task" id = "${listt[i].id}">
+      <div>${listt[i].taskContent}</div>
+      <div>
+          <button onclick = "checkb('${listt[i].id}')"><i class="fa-solid fa-check"></i></button>
+          <button onclick = "deleteb('${listt[i].id}')"><i class="fa-solid fa-trash"></i></button>
+      </div>
+  </div>`;
+    }
+  }
+  addbt.innerHTML = result;
+}
+
+function randomID() {
+  return "_" + Math.random().toString(36).substr(2, 9);
 }
