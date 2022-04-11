@@ -8,4 +8,4 @@ innerHTML을 사용한 리스트의 삽입, 삭제 (javascript)
 
 모두,진행중,완료탭을 통해 사용자가 원하는 메모만 확인할 수 있다
 
-https://yehoon-second.netlify.app
+https://yehoon-second.netlify.app (버그 수정 예정)
